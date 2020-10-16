@@ -1,9 +1,9 @@
 package br.zul.zwork5.io.zip;
 
-import br.zul.zwork4.exception.ZResourceNotFoundException;
 import br.zul.zwork5.io.path.ZZipPath;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.util.ZStringMap;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.util.ZStringMap;
+import java.io.FileNotFoundException;
 import java.util.zip.ZipEntry;
 
 /**
@@ -48,7 +48,7 @@ class ZZipTreeNode {
         return entry!=null||!nodeMap.isEmpty();
     }
 
-    public long getSize() throws ZResourceNotFoundException {
+    public long getSize() throws FileNotFoundException {
         requireExists();
         if (entry!=null){
             return entry.getSize();
@@ -56,7 +56,7 @@ class ZZipTreeNode {
         throw new UnsupportedOperationException();
     }
     
-    public long getCompressedSize() throws ZResourceNotFoundException{
+    public long getCompressedSize() throws FileNotFoundException{
         requireExists();
         if (entry!=null){
             return entry.getCompressedSize();
@@ -94,9 +94,9 @@ class ZZipTreeNode {
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private void requireExists() {
+    private void requireExists() throws FileNotFoundException {
         if (!exists()){
-            throw new ZResourceNotFoundException(getPath());
+            throw new FileNotFoundException(getPath());
         }
     }
     

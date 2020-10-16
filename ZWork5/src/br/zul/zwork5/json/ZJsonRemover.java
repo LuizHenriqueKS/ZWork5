@@ -1,8 +1,8 @@
 package br.zul.zwork5.json;
 
 import br.zul.zwork5.conversion.ZConversionManager;
-import br.zul.zwork5.conversion.ZConversionObj;
-import br.zul.zwork4.util.ZList;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
 import java.util.Collection;
 
 /**
@@ -28,7 +28,7 @@ class ZJsonRemover {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public void remove() {
+    public void remove() throws ZConversionErrorException, ZJsonException {
         if (json.has(keyList)){
             ZJsonChildLister lister = new ZJsonChildLister(json, keyList);
             ZJson jsonWithKeyToRemove = lister.beforeLast();

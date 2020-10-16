@@ -1,12 +1,12 @@
 package br.zul.zwork5.io.zip;
 
-import br.zul.zwork4.exception.ZFileNotFoundException;
-import br.zul.zwork4.exception.ZResourceNotFoundException;
-import br.zul.zwork4.exception.ZUneditableFileException;
 import br.zul.zwork5.io.ZFile;
 import br.zul.zwork5.io.ZFileEdition;
 import br.zul.zwork5.io.path.ZZipPath;
-import br.zul.zwork4.util.ZList;
+import br.zul.zwork5.exception.ZUneditableFileException;
+import br.zul.zwork5.util.ZList;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 
@@ -59,7 +59,7 @@ public class ZZipResource implements ZFile {
     }
 
     @Override
-    public long getSize() throws ZResourceNotFoundException {
+    public long getSize() throws FileNotFoundException {
         requireExists();
         return getNode().getSize();
     }
@@ -95,7 +95,7 @@ public class ZZipResource implements ZFile {
     }
 
     @Override
-    public InputStream getInputStream() throws ZResourceNotFoundException {
+    public InputStream getInputStream() throws FileNotFoundException, IOException {
         requireExists();
         return zipFile.getInputStream(getEntry());
     }
@@ -108,10 +108,10 @@ public class ZZipResource implements ZFile {
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private ZipEntry getEntry() throws ZResourceNotFoundException{
+    private ZipEntry getEntry() throws FileNotFoundException, IOException{
         ZipEntry entry = zipFile.getEntry(getPath());
         if (entry==null){
-            throw new ZResourceNotFoundException(getPath());
+            throw new FileNotFoundException(getPath());
         }
         return entry;
     }
@@ -120,9 +120,9 @@ public class ZZipResource implements ZFile {
         return zipFile.getNode(getPath());
     }
     
-    private void requireExists() throws ZResourceNotFoundException{
+    private void requireExists() throws FileNotFoundException{
         if (!getNode().exists()){
-            throw new ZResourceNotFoundException(getPath());
+            throw new FileNotFoundException(getPath());
         }
     }
     

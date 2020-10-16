@@ -1,5 +1,7 @@
 package br.zul.zwork5.json;
 
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
 import java.util.Collection;
 
 /**
@@ -25,7 +27,7 @@ class ZJsonAdder {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public void add(Object value){
+    public void add(Object value) throws ZConversionErrorException, ZJsonException{
         new ZJsonPutter(json, keyList).add(value);
     }
     

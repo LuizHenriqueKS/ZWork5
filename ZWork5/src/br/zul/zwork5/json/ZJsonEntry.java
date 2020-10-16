@@ -1,8 +1,8 @@
 package br.zul.zwork5.json;
 
-import br.zul.zwork4.exception.ZJsonException;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.value.ZValue;
 import java.util.Collection;
 
 /**
@@ -32,7 +32,7 @@ public class ZJsonEntry {
         return json.get(keyList);
     }
 
-    public void setValue(Object value) {
+    public void setValue(Object value) throws ZJsonException {
         json.put(keyList, value);
     }
     

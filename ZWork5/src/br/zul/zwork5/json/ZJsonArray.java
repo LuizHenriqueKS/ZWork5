@@ -2,10 +2,13 @@ package br.zul.zwork5.json;
 
 import br.zul.zwork5.conversion.ZConversionManager;
 import br.zul.zwork5.entity.ZEntity;
-import br.zul.zwork4.exception.ZConversionErrorException;
-import br.zul.zwork4.exception.ZJsonException;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.exception.ZNewInstanceException;
+import br.zul.zwork5.exception.ZUnexpectedException;
+import br.zul.zwork5.exception.ZVarHandlerException;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.value.ZValue;
 import java.util.Objects;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,8 +110,12 @@ public class ZJsonArray {
         return result;
     }
 
-    public void add(Object value) {
-        jsonArray.put(new ZJsonValuer(value).value());
+    public void add(Object value) throws ZJsonException {
+        try {
+            jsonArray.put(new ZJsonValuer(value).value());
+        } catch (ZConversionErrorException ex) {
+            throw new ZJsonException(ex);
+        }
     }
     
     public void add(int index, Object value){
@@ -123,19 +130,27 @@ public class ZJsonArray {
         jsonArray = newJsonArray;
     }
     
-    public void put(int index, Object value){
-        jsonArray.put(index, new ZJsonValuer(value).value());
+    public void put(int index, Object value) throws ZJsonException{
+        try {
+            jsonArray.put(index, new ZJsonValuer(value).value());
+        } catch (ZConversionErrorException ex) {
+            throw new ZJsonException(ex);
+        }
     }
     
     public void remove(int index){
         jsonArray.remove(index);
     }
     
-    public ZJsonArray copy(){
-        return new ZJsonArray(toString());
+    public ZJsonArray copy() {
+        try {
+            return new ZJsonArray(toString());
+        } catch (ZJsonException ex){
+            throw new ZUnexpectedException(ex);
+        }
     }
     
-    public <T> ZList<T> asObjList(Class<T> objClass) throws ZConversionErrorException{
+    public <T> ZList<T> asObjList(Class<T> objClass) throws ZConversionErrorException, ZJsonException, ZNewInstanceException, ZVarHandlerException{
         ZList<T> result = new ZList<>();
         for (ZValue value: listValues()){
             if (value==null){
@@ -156,14 +171,14 @@ public class ZJsonArray {
         return result;
     }
     
-    public <T extends ZEntity> ZList<T> asEntityList(Class<T> entityClass){
+    public <T extends ZEntity> ZList<T> asEntityList(Class<T> entityClass) throws ZConversionErrorException{
         ZList<T> result = new ZList<>();
         for (ZValue value:listValues()){
             T entity;
             if (value==null){
                 entity = null;
             } else {
-                entity = value.asJsonObject().asEntity(entityClass);
+                entity = value.convertTo(ZJsonObject.class).asEntity(entityClass);
             }
             result.add(entity);
         }

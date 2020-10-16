@@ -2,7 +2,8 @@
 package br.zul.zwork5.entity;
 
 import br.zul.zwork5.conversion.ZConversionObj;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZVarHandlerException;
+import br.zul.zwork5.value.ZValue;
 
 /**
  *
@@ -25,7 +26,7 @@ class ZAttrValueGetter {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public ZValue get() {
+    public ZValue get() throws ZVarHandlerException {
         ZValue value = attrHandler.varHandler.getValue();
         if (value==null){
             return null;

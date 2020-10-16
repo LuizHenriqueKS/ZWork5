@@ -81,17 +81,13 @@ public class ZLogger {
     }
 
     private ZLogPrinter initPrinter(PrintStream printStream, ZLogType type) {
-        return new ZDefaultLogPrinter(printStream, type);
+        return new ZDefaultLogPrinter(this, printStream, type);
     }
 
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private void printOnConsoleIfCan(PrintStream printStream, String formattedMessage) {
-        if (isPrintOnConsole()){
-            printStream.print(formattedMessage);
-        }
-    }
+
     
     //==========================================================================
     //GETTERS E SETTERS

@@ -2,7 +2,7 @@ package br.zul.zwork5.conversion.converter;
 
 import br.zul.zwork5.conversion.ZConversionObj;
 import br.zul.zwork5.conversion.ZStringConverter;
-import br.zul.zwork4.util.ZStrUtils;
+import br.zul.zwork5.util.ZStrUtils;
 import java.util.Arrays;
 
 /**

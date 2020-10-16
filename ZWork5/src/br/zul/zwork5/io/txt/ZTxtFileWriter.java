@@ -1,11 +1,13 @@
 package br.zul.zwork5.io.txt;
 
-import br.zul.zwork4.exception.ZFileAlreadyOpenException;
 import br.zul.zwork4.exception.ZIOException;
-import br.zul.zwork4.exception.ZStreamClosedException;
+import br.zul.zwork5.exception.ZFileAlreadyOpenException;
+import br.zul.zwork5.exception.ZStreamClosedException;
+import br.zul.zwork5.exception.ZUneditableFileException;
 import br.zul.zwork5.io.ZFile;
 import br.zul.zwork5.io.ZFileEdition;
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -17,7 +19,7 @@ import java.util.List;
  *
  * @author Luiz Henrique
  */
-public class ZTxtFileWriter {
+public class ZTxtFileWriter implements Closeable {
 
     //==========================================================================
     //VARIÁVEIS PRIVADAS
@@ -98,6 +100,7 @@ public class ZTxtFileWriter {
         }
     }
     
+    @Override
     public void close(){
         try {
             bw.close();
@@ -117,7 +120,7 @@ public class ZTxtFileWriter {
     //==========================================================================
     //MÉTODOS PRIVADOS DE APOIO
     //==========================================================================
-    private void openFile(boolean append, Charset charset) throws ZIOException {
+    private void openFile(boolean append, Charset charset) throws IOException, ZFileAlreadyOpenException {
         requireNonOpen();
         try {
             edition = file.editFile(append);
@@ -125,7 +128,7 @@ public class ZTxtFileWriter {
             osw = new OutputStreamWriter(os, charset);
             bw = new BufferedWriter(osw);
             open = true;
-        }catch(Exception e){
+        }catch(ZUneditableFileException e){
             throw new ZIOException(e);
         }
     }

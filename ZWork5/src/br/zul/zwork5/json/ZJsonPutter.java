@@ -1,10 +1,11 @@
 package br.zul.zwork5.json;
 
 import br.zul.zwork5.conversion.ZConversionManager;
-import br.zul.zwork4.exception.ZConversionErrorException;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.util.ZStrUtils;
-import br.zul.zwork4.util.ZUtil;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.util.ZStrUtils;
+import br.zul.zwork5.util.ZUtil;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ class ZJsonPutter {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public void put(Object value) {
+    public void put(Object value) throws ZJsonException, ZConversionErrorException {
         ZList<ZJson> jsonList = new ZJsonChildLister(json, keyList).list();
         ZJson beforeLastJson = getBeforeLastJson(jsonList);
         Object lastKey = getLastKey();
@@ -39,7 +40,7 @@ class ZJsonPutter {
         refreshParentsJsons(jsonList);
     }
     
-    public void add(Object value){
+    public void add(Object value) throws ZConversionErrorException, ZJsonException{
         ZList<ZJson> jsonList = new ZJsonChildLister(json, keyList).list();
         ZJson beforeLastJson = getBeforeLastJson(jsonList);
         Object lastKey = getLastKey();
@@ -55,7 +56,7 @@ class ZJsonPutter {
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private void put(ZJson json, Object key, Object value){
+    private void put(ZJson json, Object key, Object value) throws ZJsonException, ZConversionErrorException{
         if (Objects.equals(key, null)){
             addIntoArray(json, value);
         } else {
@@ -63,7 +64,7 @@ class ZJsonPutter {
         }
     }
 
-    private void refreshParentsJsons(ZList<ZJson> jsonList) {
+    private void refreshParentsJsons(ZList<ZJson> jsonList) throws ZJsonException, ZConversionErrorException {
         for (int i=jsonList.size()-2;i>=0;i--){
             Object key = keyList.get(i);
             ZJson current = jsonList.get(i);
@@ -79,7 +80,7 @@ class ZJsonPutter {
         }
     }
     
-    private void putIntoAny(ZJson json, Object key, Object value){
+    private void putIntoAny(ZJson json, Object key, Object value) throws ZJsonException, ZConversionErrorException{
         boolean isInteger = isInteger(key);
         if (isInteger&&canBeArray(json)) {
             convertJsonObjToArray(json);
@@ -101,7 +102,7 @@ class ZJsonPutter {
         json.array.add(index, value);
     }
 
-    private void addIntoArray(ZJson json, Object value) {
+    private void addIntoArray(ZJson json, Object value) throws ZJsonException {
         if (json.isArray()){
             json.array.add(value);
         } else {
@@ -110,7 +111,7 @@ class ZJsonPutter {
         }
     }
 
-    private void convertJsonArrayToObj(ZJson json) {
+    private void convertJsonArrayToObj(ZJson json) throws ZJsonException {
         json.object = json.asJsonObject();
         json.array = null;
     }
@@ -128,7 +129,7 @@ class ZJsonPutter {
         }
     }
 
-    private String objToStr(Object key) {
+    private String objToStr(Object key) throws ZConversionErrorException {
         return ZConversionManager.getInstance().convert(key, String.class);
     }
 
@@ -141,7 +142,7 @@ class ZJsonPutter {
         }
     }
 
-    private Integer objToInt(Object key) {
+    private Integer objToInt(Object key) throws ZConversionErrorException {
         return ZConversionManager.getInstance().convert(key, Integer.class);
     }
 

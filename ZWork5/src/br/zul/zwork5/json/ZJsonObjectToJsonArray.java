@@ -1,6 +1,9 @@
 package br.zul.zwork5.json;
 
-import br.zul.zwork4.util.ZStrUtils;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.util.ZStrUtils;
+import br.zul.zwork5.value.ZValue;
+import java.util.Map.Entry;
 
 /**
  *
@@ -23,7 +26,7 @@ class ZJsonObjectToJsonArray {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public ZJsonArray convert() {
+    public ZJsonArray convert() throws ZJsonException {
         ZJsonArray jsonArray = new ZJsonArray();
         addValuesWithNumericKeys(jsonArray);
         addValuesWithOthersKeys(jsonArray);
@@ -33,20 +36,22 @@ class ZJsonObjectToJsonArray {
     //==========================================================================
     //MÉTODOS PRIVADFOS
     //==========================================================================
-    private void addValuesWithNumericKeys(ZJsonArray jsonArray) {
-        jsonObject.forEach((key, value)->{
-           if (ZStrUtils.isInteger(key)){
-               jsonArray.put(Integer.valueOf(key), value);
-           } 
-        });
+    private void addValuesWithNumericKeys(ZJsonArray jsonArray) throws ZJsonException {
+        for (Entry<String, ZValue> e : jsonObject.asMap().entrySet()) {
+            if (ZStrUtils.isInteger(e.getKey())) {
+                jsonArray.put(Integer.valueOf(e.getKey()), e.getValue());
+            }
+        }
     }
 
-    private void addValuesWithOthersKeys(ZJsonArray jsonArray) {
-        jsonObject.forEach((key, value)->{
-           if (!ZStrUtils.isInteger(key)){
-               jsonArray.add(value);
-           } 
-        });
+    private void addValuesWithOthersKeys(ZJsonArray jsonArray) throws ZJsonException {
+        for (Entry<String, ZValue> e : jsonObject.asMap().entrySet()) {
+            String key = e.getKey();
+            ZValue value = e.getValue();
+            if (!ZStrUtils.isInteger(key)) {
+                jsonArray.add(value);
+            }
+        }
     }
     
 }

@@ -1,8 +1,8 @@
 package br.zul.zwork5.json;
 
-import br.zul.zwork4.exception.ZConversionErrorException;
-import br.zul.zwork4.exception.ZJsonException;
-import br.zul.zwork4.util.ZList;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.util.ZList;
 import java.util.Collection;
 
 /**
@@ -50,7 +50,7 @@ class ZJsonChildLister {
             result = new ZList<>();
             for (Object key:keyList){
                 try {
-                    current = current.get(key).asJson();
+                    current = current.get(key).convertTo(ZJson.class);
                 } catch (ZConversionErrorException|ZJsonException e){
                     current = new ZJson();
                 }

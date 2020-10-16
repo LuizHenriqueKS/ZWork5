@@ -1,9 +1,11 @@
 package br.zul.zwork5.entity;
 
+import br.zul.zwork5.exception.ZAttrHandlerException;
+import br.zul.zwork5.exception.ZVarHandlerException;
 import br.zul.zwork5.reflection.ZVarHandler;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.util.ZUtil;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.util.ZUtil;
+import br.zul.zwork5.value.ZValue;
 import java.lang.annotation.Annotation;
 
 /**
@@ -68,8 +70,12 @@ public class ZAttrHandler {
         return varHandler.getName();
     }
     
-    public ZValue getValue(){
-        return new ZAttrValueGetter(this).get();
+    public ZValue getValue() throws ZAttrHandlerException{
+        try {
+            return new ZAttrValueGetter(this).get();
+        } catch (ZVarHandlerException ex) {
+            throw new ZAttrHandlerException(ex);
+        }
     }
     public void setValue(Object value){
         new ZAttrValueSetter(this).set(value);

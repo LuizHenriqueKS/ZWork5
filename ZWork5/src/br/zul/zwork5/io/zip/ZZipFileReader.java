@@ -1,6 +1,8 @@
 package br.zul.zwork5.io.zip;
 
 import br.zul.zwork5.io.ZFile;
+import java.io.Closeable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -12,7 +14,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Luiz Henrique
  */
-public class ZZipFileReader {
+public class ZZipFileReader implements Closeable {
     
     //==========================================================================
     //VARIÁVEIS
@@ -25,13 +27,13 @@ public class ZZipFileReader {
     //==========================================================================
     //CONSTRUTORES
     //==========================================================================
-    public ZZipFileReader(ZFile file, Charset charset) {
+    public ZZipFileReader(ZFile file, Charset charset) throws IOException, FileNotFoundException {
         this.file = file;
         this.charset = charset;
         open();
     }
 
-    public ZZipFileReader(ZFile file) {
+    public ZZipFileReader(ZFile file) throws IOException, FileNotFoundException {
         this.file = file;
         this.charset = Charset.defaultCharset();
         open();
@@ -40,7 +42,7 @@ public class ZZipFileReader {
     //==========================================================================
     //MÉTODOS DE CONSTRUÇÃO
     //==========================================================================
-    private void open(){
+    private void open() throws IOException, FileNotFoundException{
         is = file.getInputStream();
         if (file.getExtension().equalsIgnoreCase("exe")){
             is = new ZWinZipInputStream(is);
@@ -67,6 +69,7 @@ public class ZZipFileReader {
         }
     }
     
+    @Override
     public void close() throws IOException{
         try {
             zis.close();

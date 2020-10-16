@@ -5,15 +5,22 @@ import br.zul.zwork5.entity.ZAttrHandler;
 import br.zul.zwork5.entity.ZEntity;
 import br.zul.zwork5.entity.ZEntityHandler;
 import br.zul.zwork5.entity.ZEntityManager;
+import br.zul.zwork5.exception.ZAttrHandlerException;
+import br.zul.zwork5.exception.ZConversionErrorException;
 import br.zul.zwork5.reflection.ZClass;
 import br.zul.zwork5.reflection.ZObjHandler;
 import br.zul.zwork5.reflection.ZVarHandler;
 import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.exception.ZNewInstanceException;
+import br.zul.zwork5.exception.ZUnexpectedException;
+import br.zul.zwork5.exception.ZVarHandlerException;
 import br.zul.zwork5.util.ZList;
 import br.zul.zwork5.value.ZValue;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,28 +51,41 @@ public class ZJsonObject {
         }
     }
     
-    public ZJsonObject(Map<String, Object> map) throws ZJsonException{
-        this();
-        map.entrySet().forEach(e->put(e.getKey(), e.getValue()));
+    public static ZJsonObject fromMap(Map<String, Object> map) throws ZJsonException{
+        ZJsonObject result = new ZJsonObject();
+        for (Entry<String, Object> e:map.entrySet()){
+            result.put(e.getKey(), e.getValue());
+        }
+        return result;
     }
     
-    public ZJsonObject(ZEntity entity) throws ZJsonException{
-        this();
-        new ZEntityHandler((ZEntity)entity).getVarMap().forEach((key, attr)->{
-            put(key, attr.getValue());
-        });
+    public static ZJsonObject fromEntity(ZEntity entity) throws ZJsonException{
+        try {
+            ZJsonObject result = new ZJsonObject();
+            Set<Entry<String, ZAttrHandler>> varSet = new ZEntityHandler((ZEntity)entity).getVarMap().entrySet();
+            for (Entry<String, ZAttrHandler> var:varSet){
+                String key = var.getKey();
+                ZAttrHandler attr = var.getValue();
+                result.put(key, attr.getValue());
+            }
+            return result;
+        }catch(ZAttrHandlerException ex){
+            throw new ZJsonException(ex);
+        }
     }
     
-    public ZJsonObject(Object obj) throws ZJsonException{
-        this();
-        if (obj instanceof ZEntity){
-            new ZEntityHandler((ZEntity)obj).getVarMap().forEach((key, attr)->{
-                put(key, attr.getValue());
-            });
-        } else {
-            new ZObjHandler(obj).getVarMap().forEach((key, attr)->{
-                put(key, attr.getValue());
-            });
+    public static ZJsonObject fromObj(Object obj) throws ZJsonException {
+        try {
+            ZJsonObject result = new ZJsonObject();
+            Set<Entry<String, ZVarHandler>> varSet = new ZObjHandler(obj).getVarMap().entrySet();
+            for (Entry<String, ZVarHandler> var:varSet){
+                String key = var.getKey();
+                ZVarHandler attr = var.getValue();
+                result.put(key, attr.getValue());
+            }
+            return result;
+        } catch (ZVarHandlerException ex){
+            throw new ZJsonException(ex);
         }
     }
     
@@ -134,11 +154,11 @@ public class ZJsonObject {
         return ()->value;
     }
     
-    public void put(String key, Object value){
+    public void put(String key, Object value) throws ZJsonException{
         try {
             Object convertedValue = new ZJsonValuer(value).value();
             jsonObject.put(key, convertedValue);
-        }catch(JSONException e){
+        }catch(JSONException|ZConversionErrorException e){
             throw new ZJsonException(e);
         }catch(ZJsonException e){
             if (key.startsWith("this")){
@@ -178,11 +198,7 @@ public class ZJsonObject {
     
     public void forEach(BiConsumer<String, ZValue> consumer){
         jsonObject.toMap().forEach((key,value)->{
-            if (value==null){
-                consumer.accept(key, null);
-            } else {
-                consumer.accept(key, ()->value);
-            }
+            consumer.accept(key, ()->value);
         });
     }
 
@@ -200,11 +216,13 @@ public class ZJsonObject {
         return (T)entityHandler.getEntity();
     }
 
-    public <T> T asObject(Class<T> objClass) {
+    public <T> T asObject(Class<T> objClass) throws ZNewInstanceException, ZVarHandlerException {
         ZClass clazz = new ZClass(objClass);
         T obj = (T)clazz.newInstance();
         ZObjHandler objHandler = new ZObjHandler(obj);
-        forEach((key, value)->{
+        for (Entry<String, Object> e:jsonObject.toMap().entrySet()){
+            String key = e.getKey();
+            Object value = e.getValue();
             String localKey = key.replace("_", "");
             ZVarHandler var = objHandler.listVars().optFirst(v->v.getName().equalsIgnoreCase(localKey));
             if (var!=null&&(var.hasSetters()||var.hasField())){
@@ -212,12 +230,16 @@ public class ZJsonObject {
                 convObj.setAttribute("json", true);
                 var.setValue(convObj);
             }
-        });
+        };
         return obj;
     }
     
-    public ZJsonObject copy(){
-        return new ZJsonObject(toString());
+    public ZJsonObject copy() {
+        try {
+            return new ZJsonObject(toString());
+        } catch (ZJsonException ex){
+            throw new ZUnexpectedException(ex);
+        }
     }
     
 }

@@ -1,9 +1,10 @@
 package br.zul.zwork5.json;
 
 import br.zul.zwork5.conversion.ZConversionManager;
-import br.zul.zwork4.exception.ZJsonException;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.value.ZValue;
 import java.util.Collection;
 import java.util.List;
 
@@ -42,7 +43,7 @@ class ZJsonGetter {
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private ZValue getValue(ZJson last, Object key) {
+    private ZValue getValue(ZJson last, Object key) throws ZJsonException, ZConversionErrorException {
         if (last.array!=null){
             return last.array.get(getKeyInt(key));
         } else {
@@ -59,7 +60,7 @@ class ZJsonGetter {
         }
     }
 
-    private int getKeyInt(Object key) {
+    private int getKeyInt(Object key) throws ZConversionErrorException {
         if (key instanceof Integer){
             return (int)key;
         } else {

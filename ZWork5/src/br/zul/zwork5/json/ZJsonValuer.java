@@ -6,14 +6,15 @@ import br.zul.zwork5.conversion.annotation.ZListAnnotation;
 import br.zul.zwork5.currency.ZCurrency;
 import br.zul.zwork5.entity.ZAttribute;
 import br.zul.zwork5.entity.ZEntity;
-import br.zul.zwork4.exception.ZJsonException;
 import br.zul.zwork5.io.ZFile;
-import br.zul.zwork4.timestamp.ZDate;
-import br.zul.zwork4.timestamp.ZDateTime;
-import br.zul.zwork4.timestamp.ZTime;
-import br.zul.zwork4.timestamp.ZTimeStamp;
-import br.zul.zwork4.util.ZUtil;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.timestamp.ZDate;
+import br.zul.zwork5.timestamp.ZDateTime;
+import br.zul.zwork5.timestamp.ZTime;
+import br.zul.zwork5.timestamp.ZTimeStamp;
+import br.zul.zwork5.util.ZUtil;
+import br.zul.zwork5.value.ZValue;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -45,7 +46,7 @@ public class ZJsonValuer {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public Object value() {
+    public Object value() throws ZJsonException, ZConversionErrorException {
         if (value==null){
             return null;
         } else if (isSupported(value)){
@@ -83,7 +84,7 @@ public class ZJsonValuer {
         } else if (value.getClass().isArray()){
             return arrayToValue(value);
         } else if (value instanceof Object){
-            return new ZJsonObject(value).jsonObject;
+            return ZJsonObject.fromObj(value).jsonObject;
         } else {
             throw new ZJsonException("Valor para json não suportado ({0}): {1}", value.getClass().getName(), value);
         }
@@ -122,7 +123,7 @@ public class ZJsonValuer {
         return jsonArray.jsonArray;
     }
 
-    private Object valueToValue(ZValue value) {
+    private Object valueToValue(ZValue value) throws ZJsonException, ZConversionErrorException {
         if (isSupported(value.asObject())){
             return value.asObject();
         } else {
@@ -130,7 +131,7 @@ public class ZJsonValuer {
         }
     }
 
-    private Object conversionObjToValue(ZConversionObj obj) {
+    private Object conversionObjToValue(ZConversionObj obj) throws ZConversionErrorException, ZJsonException {
         if (isNeedToConvert(obj)){
             return ZConversionManager.getInstance().convert(obj, String.class);
         } else {
@@ -158,11 +159,11 @@ public class ZJsonValuer {
         return aClass.getName();
     }
 
-    private Object entityToValue(ZEntity entity) {
-        return new ZJsonObject(entity).jsonObject;
+    private Object entityToValue(ZEntity entity) throws ZJsonException {
+        return ZJsonObject.fromEntity(entity).jsonObject;
     }
 
-    private Object collectionToValue(Collection<?> collection) {
+    private Object collectionToValue(Collection<?> collection) throws ZJsonException, ZConversionErrorException {
         JSONArray array = new JSONArray();
         for (Object item:collection){
             array.put(new ZJsonValuer(item).value());
@@ -191,7 +192,7 @@ public class ZJsonValuer {
         return cur.toString();
     }
 
-    private Object arrayToValue(Object value) {
+    private Object arrayToValue(Object value) throws ZJsonException, ZConversionErrorException {
         List<Object> objectList = new ArrayList<>();
         for (int i=0;i<Integer.MAX_VALUE;i++){
             try {

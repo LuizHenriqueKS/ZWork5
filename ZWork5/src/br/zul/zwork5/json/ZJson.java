@@ -1,9 +1,11 @@
 package br.zul.zwork5.json;
 
 import br.zul.zwork5.entity.ZEntity;
-import br.zul.zwork4.exception.ZJsonException;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
+import br.zul.zwork5.exception.ZUnexpectedException;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.value.ZValue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -31,19 +33,26 @@ public class ZJson {
         this.object = new ZJsonObject();
     }
     
-    public ZJson(Map<Object, Object> map) throws ZJsonException{
-        this();
-        map.entrySet().forEach(e->put(Arrays.asList(e.getKey()), e.getValue()));
+    public static ZJson fromMap(Map<Object, Object> map) throws ZJsonException{
+        ZJson json = new ZJson();
+        for (Entry<Object, Object> e:map.entrySet()){
+            json.put(Arrays.asList(e.getKey()), e.getValue());
+        }
+        return json;
     }
     
-    public ZJson(ZEntity entity) throws ZJsonException{
-        this.object = new ZJsonObject(entity);
-        requireValid();
+    public static ZJson fromEntity(ZEntity entity) throws ZJsonException{
+        ZJsonObject arg = ZJsonObject.fromEntity(entity);
+        ZJson json = new ZJson(arg);
+        json.requireValid();;
+        return json;
     }
     
-    public ZJson(Object obj) throws ZJsonException{
-        this.object = new ZJsonObject(obj);
-        requireValid();
+    public static ZJson fromObj(Object obj) throws ZJsonException{
+        ZJsonObject arg = ZJsonObject.fromObj(obj);
+        ZJson json = new ZJson(arg);
+        json.requireValid();
+        return json;
     }
 
     public ZJson(String source) throws ZJsonException {
@@ -103,7 +112,7 @@ public class ZJson {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public void add(Object value){
+    public void add(Object value) throws ZJsonException{
         if (isObject()&&object.isEmpty()){
             convertToArray();
         }
@@ -134,15 +143,23 @@ public class ZJson {
         }
     }
     
-    public void add(Collection<Object> keyList, Object value){
-        new ZJsonAdder(this, keyList).add(value);
+    public void add(Collection<Object> keyList, Object value) throws ZJsonException{
+        try {
+            new ZJsonAdder(this, keyList).add(value);
+        } catch (ZConversionErrorException ex) {
+            throw new ZJsonException(ex);
+        }
     }
     
-    public void put(Collection<Object> keyList, Object value){
-        new ZJsonPutter(this, keyList).put(value);
+    public void put(Collection<Object> keyList, Object value) throws ZJsonException{
+        try {
+            new ZJsonPutter(this, keyList).put(value);
+        } catch (ZConversionErrorException ex) {
+            throw new ZJsonException(ex);
+        }
     }
     
-    public void put(Object key, Object value){
+    public void put(Object key, Object value) throws ZJsonException{
         put(Arrays.asList(key), value);
     }
     
@@ -151,7 +168,11 @@ public class ZJson {
     }
     
     public void remove(Collection<Object> keyList){
-        new ZJsonRemover(this, keyList).remove();
+        try {
+            new ZJsonRemover(this, keyList).remove();
+        } catch (ZConversionErrorException | ZJsonException ex) {
+            throw new ZUnexpectedException(ex);
+        }
     }
     
     public ZJsonEntry getEntry(Object... keys){
@@ -190,7 +211,7 @@ public class ZJson {
         }
     }
     
-    public ZJsonObject asJsonObject(){
+    public ZJsonObject asJsonObject() throws ZJsonException{
         if (object==null){
             ZJsonObject jsonObject = new ZJsonObject();
             for (int key=0;key<array.size();key++){
@@ -202,7 +223,7 @@ public class ZJson {
         }
     }
     
-    public ZJsonArray asJsonArray(){
+    public ZJsonArray asJsonArray() throws ZJsonException{
         if (array==null){
             return new ZJsonObjectToJsonArray(object).convert();
         } else {
@@ -264,7 +285,7 @@ public class ZJson {
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private void requireValid() {
+    private void requireValid() throws ZJsonException {
         if (!isValid()) {
             throw new ZJsonException("Json inválido.");
         }
@@ -282,7 +303,7 @@ public class ZJson {
         } catch (ZJsonException e) {}
     }
     
-    private void convertToArray() {
+    private void convertToArray() throws ZJsonException {
         array = asJsonArray();
         object = null;
     }
