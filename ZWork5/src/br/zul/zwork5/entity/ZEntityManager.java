@@ -1,8 +1,8 @@
 package br.zul.zwork5.entity;
 
-import br.zul.zwork4.exception.ZInstantiationException;
 import br.zul.zwork5.reflection.ZClass;
-import br.zul.zwork4.util.ZList;
+import br.zul.zwork5.exception.ZInstantiationException;
+import br.zul.zwork5.util.ZList;
 import java.util.Map;
 
 /**
@@ -77,11 +77,11 @@ public class ZEntityManager {
     }
     
     public ZAttrManager getAttrByFieldName(String fieldName){
-        return listAttrs().first(a->a.getFieldName().equals(fieldName));
+        return listAttrs().first(a->a.getFieldName().equals(fieldName)).get();
     }
     
     public ZAttrManager getPrimaryKeyAttr(){
-        return listAttrs().first(a->a.isPrimaryKey());
+        return listAttrs().first(a->a.isPrimaryKey()).get();
     }
     
 }

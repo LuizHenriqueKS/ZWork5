@@ -2,6 +2,8 @@ package br.zul.zwork5.entity;
 
 import br.zul.zwork5.conversion.ZConversionManager;
 import br.zul.zwork5.conversion.ZConversionObj;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZVarHandlerException;
 
 /**
  *
@@ -24,7 +26,7 @@ class ZAttrValueSetter {
     //==========================================================================
     //MÉTODOS PUBLICOS
     //==========================================================================
-    public void set(Object value) {
+    public void set(Object value) throws ZConversionErrorException, ZVarHandlerException {
         Object convertedValue;
         if (value==null){
             convertedValue = value;

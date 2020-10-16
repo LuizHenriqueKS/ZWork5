@@ -1,7 +1,7 @@
 package br.zul.zwork5.io.txt;
 
 import br.zul.zwork5.io.ZFile;
-import br.zul.zwork5.exception.ZStreamClosedException;
+import br.zul.zwork5.exception.ZClosedException;
 import br.zul.zwork5.util.ZList;
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -54,7 +54,7 @@ public class ZTxtFileReader implements Closeable {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public boolean ready() throws IOException, ZStreamClosedException{
+    public boolean ready() throws IOException, ZClosedException{
         requireNonClosed();
         try {
             return br.ready();
@@ -63,17 +63,17 @@ public class ZTxtFileReader implements Closeable {
         }
     }
     
-    public int read(char[] buffer, int offset, int length) throws IOException, ZStreamClosedException{
+    public int read(char[] buffer, int offset, int length) throws IOException, ZClosedException{
         requireNonClosed();
         return isr.read(buffer, offset, length);
     }
     
-    public int read(char[] buffer) throws IOException, ZStreamClosedException{
+    public int read(char[] buffer) throws IOException, ZClosedException{
         requireNonClosed();
         return isr.read(buffer);
     }
     
-    public String readLine() throws IOException, ZStreamClosedException{
+    public String readLine() throws IOException, ZClosedException{
         requireNonClosed();
         try {
             return br.readLine();
@@ -82,7 +82,7 @@ public class ZTxtFileReader implements Closeable {
         }
     }
     
-    public ZList<String> readLines() throws IOException, ZStreamClosedException{
+    public ZList<String> readLines() throws IOException, ZClosedException{
         requireNonClosed();
         ZList<String> lineList = new ZList<>();
         String line;
@@ -92,7 +92,7 @@ public class ZTxtFileReader implements Closeable {
         return lineList;
     }
     
-    public String readLastLine() throws IOException, ZStreamClosedException {
+    public String readLastLine() throws IOException, ZClosedException {
         String line;
         String lastLine = null;
         while ((line=readLine())!=null){
@@ -101,9 +101,9 @@ public class ZTxtFileReader implements Closeable {
         return lastLine;
     }
     
-    public String readLastLine(int skip) throws IOException, IndexOutOfBoundsException, ZStreamClosedException{
+    public String readLastLine(int skip) throws IOException, IndexOutOfBoundsException, ZClosedException{
         ZList<String> lineList = readLines();
-        return lineList.last(skip);
+        return lineList.last(skip).get();
     }
     
     public void close() throws IOException{
@@ -122,9 +122,9 @@ public class ZTxtFileReader implements Closeable {
     //==========================================================================
     //MÉTODOS PRIVADOS
     //==========================================================================
-    private void requireNonClosed() throws ZStreamClosedException{
+    private void requireNonClosed() throws ZClosedException{
         if (!open){
-            throw new ZStreamClosedException(file.getPath());
+            throw new ZClosedException(file.getPath());
         }
     }
     

@@ -61,7 +61,7 @@ public class ZQueryFilterConditionLike implements ZQueryFilterCondition{
     
     private String checkFirst(ZStrList strList, String value) throws FailedLikeException {
         if (!likeValue.startsWith("%")){
-            ZStr pattern = strList.first(); 
+            ZStr pattern = strList.first().get(); 
             if (!pattern.startsWith(value)){
                 throw new FailedLikeException();
             }

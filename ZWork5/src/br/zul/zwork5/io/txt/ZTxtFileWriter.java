@@ -1,8 +1,7 @@
 package br.zul.zwork5.io.txt;
 
-import br.zul.zwork4.exception.ZIOException;
 import br.zul.zwork5.exception.ZFileAlreadyOpenException;
-import br.zul.zwork5.exception.ZStreamClosedException;
+import br.zul.zwork5.exception.ZClosedException;
 import br.zul.zwork5.exception.ZUneditableFileException;
 import br.zul.zwork5.io.ZFile;
 import br.zul.zwork5.io.ZFileEdition;
@@ -35,12 +34,12 @@ public class ZTxtFileWriter implements Closeable {
     //==========================================================================
     //CONSTRUTORES
     //==========================================================================
-    public ZTxtFileWriter(ZFile file, boolean append, Charset charset) throws ZIOException, ZFileAlreadyOpenException{
+    public ZTxtFileWriter(ZFile file, boolean append, Charset charset) throws IOException, ZFileAlreadyOpenException{
         this.file = file;
         this.openFile(append, charset);
     }
 
-    public ZTxtFileWriter(ZFile file, boolean append) throws ZIOException, ZFileAlreadyOpenException{
+    public ZTxtFileWriter(ZFile file, boolean append) throws IOException, ZFileAlreadyOpenException{
         this.file = file;
         this.openFile(append, Charset.defaultCharset());
     }
@@ -64,39 +63,36 @@ public class ZTxtFileWriter implements Closeable {
         editFile(Charset.defaultCharset());
     }*/
     
-    public void write(String str) throws ZIOException, ZStreamClosedException{
+    public void write(String str) throws IOException, ZClosedException{
         requireNonClosed();
         try {
             bw.write(str);
         } catch (IOException ex) {
-            throw new ZIOException(ex);
+            throw new IOException(ex);
         }
     }
     
-    public void writeAll(String str) throws ZIOException, ZStreamClosedException{
-        write(str);
-        close();
-    }
-    
-    public void writeLine(String line) throws ZIOException, ZStreamClosedException{
+    public void writeLine(String line) throws IOException, ZClosedException{
         write(line);
         write("\r\n");
     }
     
-    public void writeLines(String... lines) throws ZStreamClosedException{
+    public void writeLines(String... lines) throws ZClosedException, IOException{
         writeLines(Arrays.asList(lines));
     }
     
-    public void writeLines(List<String> lineList) throws ZStreamClosedException, ZIOException{
-        lineList.forEach(this::writeLine);
+    public void writeLines(List<String> lineList) throws ZClosedException, IOException{
+        for (String line: lineList){
+            this.writeLine(line);
+        }
     }
     
-    public void flush() throws ZIOException, ZStreamClosedException{
+    public void flush() throws IOException, ZClosedException{
         try {
             requireNonClosed();
             bw.flush();
         } catch (IOException ex) {
-            throw new ZIOException(ex);
+            throw new IOException(ex);
         }
     }
     
@@ -129,13 +125,13 @@ public class ZTxtFileWriter implements Closeable {
             bw = new BufferedWriter(osw);
             open = true;
         }catch(ZUneditableFileException e){
-            throw new ZIOException(e);
+            throw new IOException(e);
         }
     }
     
-    private void requireNonClosed() throws ZStreamClosedException{
+    private void requireNonClosed() throws ZClosedException{
         if (!open){
-            throw new ZStreamClosedException(file.getPath());
+            throw new ZClosedException(file.getPath());
         }
     }
     

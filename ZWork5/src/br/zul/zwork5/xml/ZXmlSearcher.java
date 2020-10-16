@@ -43,7 +43,7 @@ class ZXmlSearcher {
             search(node, result);
         } catch (ZXmlSearchBreak e){}
         try {
-            return result.first();
+            return result.first().get();
         }catch(IndexOutOfBoundsException e){
             return null;
         }

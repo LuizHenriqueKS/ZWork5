@@ -7,6 +7,7 @@ import br.zul.zwork5.entity.ZEntityHandler;
 import br.zul.zwork5.entity.ZEntityManager;
 import br.zul.zwork5.exception.ZAttrHandlerException;
 import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZInstantiationException;
 import br.zul.zwork5.reflection.ZClass;
 import br.zul.zwork5.reflection.ZObjHandler;
 import br.zul.zwork5.reflection.ZVarHandler;
@@ -202,17 +203,19 @@ public class ZJsonObject {
         });
     }
 
-    public <T extends ZEntity> T asEntity(Class<T> entityClass) {
+    public <T extends ZEntity> T asEntity(Class<T> entityClass) throws ZInstantiationException, ZConversionErrorException, ZVarHandlerException {
         ZEntityManager entityManager = new ZEntityManager(entityClass);
         ZEntityHandler entityHandler = entityManager.createNewEntityHandler();
-        forEach((key, value)->{
+        for (Entry<String, Object> e: jsonObject.toMap().entrySet()) {
+            String key = e.getKey();
+            Object value = e.getValue();
             ZAttrHandler attr = entityHandler.getAttr(key);
             if (attr!=null){
                 ZConversionObj convObj = new ZConversionObj(value, attr.getType());
                 convObj.setAttribute("json", true);
                 attr.setValue(convObj);
             }
-        });
+        }
         return (T)entityHandler.getEntity();
     }
 
@@ -224,7 +227,7 @@ public class ZJsonObject {
             String key = e.getKey();
             Object value = e.getValue();
             String localKey = key.replace("_", "");
-            ZVarHandler var = objHandler.listVars().optFirst(v->v.getName().equalsIgnoreCase(localKey));
+            ZVarHandler var = objHandler.listVars().first(v->v.getName().equalsIgnoreCase(localKey)).orElse(null);
             if (var!=null&&(var.hasSetters()||var.hasField())){
                 ZConversionObj convObj = new ZConversionObj(value, var.getType());
                 convObj.setAttribute("json", true);

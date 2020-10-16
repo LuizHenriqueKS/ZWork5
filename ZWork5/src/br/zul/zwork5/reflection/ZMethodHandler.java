@@ -1,6 +1,6 @@
 package br.zul.zwork5.reflection;
 
-import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.conversion.ZConversionOut;
 import br.zul.zwork5.exception.ZMethodException;
 import br.zul.zwork5.exception.ZMethodIsStaticException;
 import br.zul.zwork5.util.ZList;
@@ -35,7 +35,7 @@ public class ZMethodHandler {
         return method.invoke(getObj());
     }
     
-    public <T> T invoke(Class<T> returnType) throws ZMethodException, ZConversionErrorException, ZMethodIsStaticException{
+    public <T> ZConversionOut<T> invoke(Class<T> returnType) throws ZMethodException, ZMethodIsStaticException{
         return method.invoke(getObj(), returnType);
     }
     
@@ -43,7 +43,7 @@ public class ZMethodHandler {
         return method.invoke(getObj(), paramList);
     }
     
-    public <T> T invoke(Class<T> returnType, Collection<Object> paramList) throws ZMethodException, ZConversionErrorException, ZMethodIsStaticException{
+    public <T> ZConversionOut<T> invoke(Class<T> returnType, Collection<Object> paramList) throws ZMethodException, ZMethodIsStaticException{
         return method.invoke(getObj(), returnType, paramList);
     }
 

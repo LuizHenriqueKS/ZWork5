@@ -1,6 +1,6 @@
 package br.zul.zwork5.io;
 
-import br.zul.zwork4.exception.ZIOException;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -10,7 +10,7 @@ import java.io.OutputStream;
 public interface ZFileEdition {
     
     public OutputStream getOutputStream();
-    public void commit() throws ZIOException;
-    public void rollback() throws ZIOException;
+    public void commit() throws IOException;
+    public void rollback() throws IOException;
     
 }

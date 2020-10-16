@@ -43,7 +43,7 @@ public class ZVarHandler {
         result.addAll(field.listAnnotations());
         if (getter!=null) result.addAll(getter.listAnnotations());
         if (ZUtil.hasContent(setterList)&&setterList.size()==1){
-            result.addAll(setterList.first().listAnnotations());
+            result.addAll(setterList.first().get().listAnnotations());
         }
         return result;
     }
@@ -116,11 +116,11 @@ public class ZVarHandler {
     //==========================================================================
     private ZMethodHandler getBestSetter(Object value) {
         if (setterList.size()==1||value==null){
-            return setterList.first();
+            return setterList.first().get();
         } else {
             return setterList.stream().filter(setter->{
                 return setter.getReturnType().isAssignableFrom(value.getClass());
-            }).findFirst().orElse(setterList.first());
+            }).findFirst().orElse(setterList.first().get());
         } 
     }
     

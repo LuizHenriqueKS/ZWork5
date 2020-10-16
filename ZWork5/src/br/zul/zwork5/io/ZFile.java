@@ -1,8 +1,8 @@
 package br.zul.zwork5.io;
 
-import br.zul.zwork5.exception.ZFileNotFoundException;
 import br.zul.zwork5.exception.ZUneditableFileException;
 import br.zul.zwork5.util.ZList;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,7 +16,7 @@ public interface ZFile {
     public String getExtension();
     public String getPath();
     public ZFile getParent();
-    public long getSize() throws SecurityException, IOException, ZFileNotFoundException;
+    public long getSize() throws SecurityException, IOException, FileNotFoundException;
     public ZFile getChild(String filename);
     public ZList<? extends ZFile> listChildren();
     public boolean exists();
@@ -30,7 +30,7 @@ public interface ZFile {
     @Override
     public int hashCode();
     
-    public InputStream getInputStream() throws ZFileNotFoundException, IOException;
+    public InputStream getInputStream() throws FileNotFoundException, IOException;
     
     public ZFileEdition editFile(boolean append) throws ZUneditableFileException;
     

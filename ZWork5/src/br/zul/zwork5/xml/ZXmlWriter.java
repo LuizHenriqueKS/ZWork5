@@ -1,9 +1,11 @@
 package br.zul.zwork5.xml;
 
 import br.zul.zwork5.exception.ZException;
+import br.zul.zwork5.exception.ZUneditableFileException;
 import br.zul.zwork5.exception.ZXmlException;
 import br.zul.zwork5.io.ZFile;
 import br.zul.zwork5.io.ZFileEdition;
+import java.io.IOException;
 import java.io.StringWriter;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -43,7 +45,7 @@ public class ZXmlWriter {
         }
     }
     
-    public String convertToString(ZXmlNode node) throws ZException{
+    public String convertToString(ZXmlNode node) throws ZXmlException{
         try {
             if (node.isText()){
                 return node.getTextContent();
@@ -55,17 +57,17 @@ public class ZXmlWriter {
                 return xmlString;
             }
         } catch (TransformerException ex) {
-            throw new ZException(ex);
+            throw new ZXmlException(ex);
         }
     }
 
-    public void write(ZXml xml, ZFile file) throws ZException {
+    public void write(ZXml xml, ZFile file) throws ZXmlException, IOException, ZUneditableFileException {
         try {
             ZFileEdition edition = file.editFile(false);
             buildTransformer().transform(new DOMSource(xml.document), new StreamResult(edition.getOutputStream()));
             edition.commit();
         } catch (TransformerException ex) {
-            throw new ZException(ex);
+            throw new ZXmlException(ex);
         }
     }
     

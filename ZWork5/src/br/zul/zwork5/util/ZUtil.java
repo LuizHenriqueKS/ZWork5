@@ -61,7 +61,11 @@ public class ZUtil {
     
     public static <T> T tryGet(ZSupplierWithException<T> supplier, T defaultValue){
         try {
-            return supplier.get();
+            T result = supplier.get();
+            if (result==null){
+                return defaultValue;
+            }
+            return result;
         } catch (Exception ex){
             return defaultValue;
         }

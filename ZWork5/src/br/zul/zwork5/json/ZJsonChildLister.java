@@ -34,14 +34,14 @@ class ZJsonChildLister {
             if (keyList.size()==1){
                 return json;
             }
-            return list().last(1);
+            return list().last(1).get();
         } catch (IndexOutOfBoundsException e){
             return json;
         }
     }
 
     public ZJson last() {
-        return list().last();
+        return list().last().get();
     }
     
     public ZList<ZJson> list(){
@@ -50,7 +50,7 @@ class ZJsonChildLister {
             result = new ZList<>();
             for (Object key:keyList){
                 try {
-                    current = current.get(key).convertTo(ZJson.class);
+                    current = current.get(key).convertTo(ZJson.class).get();
                 } catch (ZConversionErrorException|ZJsonException e){
                     current = new ZJson();
                 }

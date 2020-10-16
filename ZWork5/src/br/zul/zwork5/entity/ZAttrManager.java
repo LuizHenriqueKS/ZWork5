@@ -1,8 +1,9 @@
 package br.zul.zwork5.entity;
 
+import br.zul.zwork5.exception.ZFieldException;
 import br.zul.zwork5.reflection.ZField;
-import br.zul.zwork4.util.ZStrUtils;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.util.ZStrUtils;
+import br.zul.zwork5.value.ZValue;
 import java.lang.annotation.Annotation;
 
 /**
@@ -42,7 +43,7 @@ public class ZAttrManager {
         return ZStrUtils.firstNotEmpty(getAttrAnnotation().name(), getFieldName());
     }
     
-    public ZValue getValue(ZEntity entity){
+    public ZValue getValue(ZEntity entity) throws ZFieldException{
         return field.getValue(entity);
     }
     

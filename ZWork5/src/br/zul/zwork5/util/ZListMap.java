@@ -3,6 +3,7 @@ package br.zul.zwork5.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  *
@@ -29,11 +30,11 @@ public class ZListMap<K, V> extends LinkedHashMap<K, ZList<V>> {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public V first(K key) throws IndexOutOfBoundsException, NoSuchElementException{
+    public Optional<V> first(K key) throws IndexOutOfBoundsException, NoSuchElementException{
         return get(key).first();
     }
     
-    public V last(K key) throws IndexOutOfBoundsException, NoSuchElementException{
+    public Optional<V> last(K key) throws IndexOutOfBoundsException, NoSuchElementException{
         return get(key).last();
     }
     

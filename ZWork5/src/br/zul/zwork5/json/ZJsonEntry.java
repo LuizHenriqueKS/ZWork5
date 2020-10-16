@@ -36,13 +36,13 @@ public class ZJsonEntry {
         json.put(keyList, value);
     }
     
-    public void addValue(Object value){
+    public void addValue(Object value) throws ZJsonException{
         ZList<Object> newKeyList = new ZList<>(keyList);
         newKeyList.add(null);
         json.add(newKeyList, value);
     }
     
-    public void addValue(int index, Object value){
+    public void addValue(int index, Object value) throws ZJsonException{
         ZList<Object> newKeyList = new ZList<>(keyList);
         newKeyList.add(index);
         json.add(newKeyList, value);

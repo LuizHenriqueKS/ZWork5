@@ -2,7 +2,7 @@ package br.zul.zwork5.conversion.converter;
 
 import br.zul.zwork5.conversion.ZConversionObj;
 import br.zul.zwork5.conversion.ZConverter;
-import br.zul.zwork4.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZConversionErrorException;
 import br.zul.zwork5.json.ZJsonArray;
 import org.json.JSONArray;
 

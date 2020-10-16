@@ -85,7 +85,7 @@ class ZJsonRefresher {
         }
     }
     
-    private void addIntoArray(ZJson json, int index, Object value) {
+    private void addIntoArray(ZJson json, int index, Object value) throws ZJsonException {
         if (!json.isArray()){
             convertJsonObjToArray(json);
         }
@@ -106,7 +106,7 @@ class ZJsonRefresher {
         json.array = null;
     }
 
-    private void convertJsonObjToArray(ZJson json) {
+    private void convertJsonObjToArray(ZJson json) throws ZJsonException {
         json.array = json.asJsonArray();
         json.object = null;
     }
@@ -131,7 +131,7 @@ class ZJsonRefresher {
         if (jsonList.size()<2){
             return json;
         } else {
-            return jsonList.last(1);
+            return jsonList.last(1).get();
         }
     }
 

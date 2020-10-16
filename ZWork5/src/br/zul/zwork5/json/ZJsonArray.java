@@ -3,6 +3,7 @@ package br.zul.zwork5.json;
 import br.zul.zwork5.conversion.ZConversionManager;
 import br.zul.zwork5.entity.ZEntity;
 import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZInstantiationException;
 import br.zul.zwork5.exception.ZJsonException;
 import br.zul.zwork5.exception.ZNewInstanceException;
 import br.zul.zwork5.exception.ZUnexpectedException;
@@ -150,20 +151,20 @@ public class ZJsonArray {
         }
     }
     
-    public <T> ZList<T> asObjList(Class<T> objClass) throws ZConversionErrorException, ZJsonException, ZNewInstanceException, ZVarHandlerException{
+    public <T> ZList<T> asObjList(Class<T> objClass) throws ZConversionErrorException, ZJsonException, ZNewInstanceException, ZVarHandlerException, ZInstantiationException{
         ZList<T> result = new ZList<>();
         for (ZValue value: listValues()){
             if (value==null){
                 result.add(null);
             } else if (ZEntity.class.isAssignableFrom(objClass)){
-                ZJsonObject jsonObject = new ZJsonObject(value.asString());
+                ZJsonObject jsonObject = new ZJsonObject(value.asString().orElse(null));
                 result.add((T)jsonObject.asEntity((Class<? extends ZEntity>)objClass));
             } else {
                 try {
                     T convertedValue = ZConversionManager.getInstance().convert(value, objClass);
                     result.add(convertedValue);
                 } catch (ZConversionErrorException e){
-                    ZJsonObject jsonObject = new ZJsonObject(value.asString());
+                    ZJsonObject jsonObject = new ZJsonObject(value.asString().orElse(null));
                     result.add(jsonObject.asObject(objClass));
                 }
             }
@@ -171,14 +172,14 @@ public class ZJsonArray {
         return result;
     }
     
-    public <T extends ZEntity> ZList<T> asEntityList(Class<T> entityClass) throws ZConversionErrorException{
+    public <T extends ZEntity> ZList<T> asEntityList(Class<T> entityClass) throws ZConversionErrorException, ZInstantiationException, ZVarHandlerException{
         ZList<T> result = new ZList<>();
         for (ZValue value:listValues()){
             T entity;
             if (value==null){
                 entity = null;
             } else {
-                entity = value.convertTo(ZJsonObject.class).asEntity(entityClass);
+                entity = value.convertTo(ZJsonObject.class).get().asEntity(entityClass);
             }
             result.add(entity);
         }

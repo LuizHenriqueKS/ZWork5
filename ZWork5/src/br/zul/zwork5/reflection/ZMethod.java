@@ -1,10 +1,10 @@
 package br.zul.zwork5.reflection;
 
+import br.zul.zwork5.conversion.ZConversionOut;
 import br.zul.zwork5.exception.ZConversionErrorException;
 import br.zul.zwork5.exception.ZMethodException;
 import br.zul.zwork5.exception.ZMethodIsNotStaticException;
 import br.zul.zwork5.exception.ZMethodIsStaticException;
-import br.zul.zwork5.exception.ZRuntimeException;
 import br.zul.zwork5.exception.ZUnexpectedException;
 import br.zul.zwork5.util.ZList;
 import br.zul.zwork5.util.ZUtil;
@@ -92,11 +92,11 @@ public class ZMethod {
         return invokeStatic(paramValueList);
     }
     
-    public <T> T invoke(Class<T> returnType) throws ZMethodException, ZConversionErrorException, ZMethodIsNotStaticException{
+    public <T> ZConversionOut<T> invoke(Class<T> returnType) throws ZMethodException, ZMethodIsNotStaticException{
        return invoke().convertTo(returnType);
     }
     
-    public <T> T invoke(Class<T> returnType, Collection<Object> paramValueList) throws ZMethodException, ZConversionErrorException, ZMethodIsNotStaticException{
+    public <T> ZConversionOut<T> invoke(Class<T> returnType, Collection<Object> paramValueList) throws ZMethodException, ZMethodIsNotStaticException{
         return invoke(paramValueList).convertTo(returnType);
     }
     
@@ -108,11 +108,11 @@ public class ZMethod {
         return invokeNoStatic(obj, paramValueList);
     }
     
-    public <T> T invoke(Object obj, Class<T> returnType) throws ZMethodException, ZConversionErrorException, ZMethodIsStaticException{
+    public <T> ZConversionOut<T> invoke(Object obj, Class<T> returnType) throws ZMethodException, ZMethodIsStaticException{
         return invoke(obj).convertTo(returnType);
     }
     
-    public <T> T invoke(Object obj, Class<T> returnType, Collection<Object> paramValueList) throws ZMethodException, ZConversionErrorException, ZMethodIsStaticException{
+    public <T> ZConversionOut<T> invoke(Object obj, Class<T> returnType, Collection<Object> paramValueList) throws ZMethodException, ZMethodIsStaticException{
         return invoke(obj, paramValueList).convertTo(returnType);
     }
 

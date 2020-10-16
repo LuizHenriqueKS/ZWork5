@@ -1,12 +1,15 @@
 package br.zul.zwork5.currency;
 
-import br.zul.zwork4.exception.ZParseException;
+import br.zul.zwork5.exception.ZParseException;
+import br.zul.zwork5.exception.ZUnexpectedException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -132,7 +135,11 @@ public final class ZCurrency {
     }
     
     public ZCurrency round(){
-        return new ZCurrency(toString(), currencyCode);
+        try {
+            return new ZCurrency(toString(), currencyCode);
+        } catch (ZParseException ex) {
+            throw new ZUnexpectedException(ex);
+        }
     }
     
     public ZCurrency abs(){

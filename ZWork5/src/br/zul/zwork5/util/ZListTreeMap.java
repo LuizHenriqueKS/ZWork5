@@ -2,6 +2,7 @@ package br.zul.zwork5.util;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -42,12 +43,20 @@ public class ZListTreeMap<K, V> extends TreeMap<K, ZList<V>> {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public V first(K key) throws IndexOutOfBoundsException, NullPointerException {
-        return get(key).first();
+    public Optional<V> first(K key) {
+        try {
+            return get(key).first();
+        } catch (NullPointerException ex){
+            return Optional.empty();
+        }
     }
     
-    public V last(K key){
-        return get(key).last();
+    public Optional<V> last(K key){
+        try {
+            return get(key).last();
+        } catch (NullPointerException ex){
+            return Optional.empty();
+        }
     }
     
     @Override

@@ -1,8 +1,8 @@
 package br.zul.zwork5.io.path;
 
-import br.zul.zwork4.str.ZStr;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.util.ZUtil;
+import br.zul.zwork5.str.ZStr;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.util.ZUtil;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;

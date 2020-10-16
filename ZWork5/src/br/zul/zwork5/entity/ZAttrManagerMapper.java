@@ -1,7 +1,7 @@
 package br.zul.zwork5.entity;
 
 import br.zul.zwork5.reflection.ZField;
-import br.zul.zwork4.util.ZList;
+import br.zul.zwork5.util.ZList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

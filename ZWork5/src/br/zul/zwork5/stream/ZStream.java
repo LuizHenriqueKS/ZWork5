@@ -52,6 +52,28 @@ public class ZStream<T> implements Stream<T> {
         return collect(ZList.getCollector());
     }
     
+    public Optional<T> findLast(){
+        try {
+            Iterator<T> iterator = stream.iterator();
+            if (iterator.hasNext()){
+                T item;
+                T lastItem = null;
+                while ((item = iterator.next())!=null){
+                    lastItem = item;
+                }
+                return Optional.ofNullable(lastItem);
+            } else {
+                return Optional.empty();
+            }
+        } finally {
+            close();
+        }
+    }
+    
+    public Iterable<T> iterable(){
+        return ()->iterator();
+    }
+    
     //==========================================================================
     //MÉTODOS PÚBLICOS SOBRESCRITOS
     //==========================================================================

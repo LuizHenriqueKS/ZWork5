@@ -2,7 +2,7 @@ package br.zul.zwork5.entity;
 
 import br.zul.zwork5.reflection.ZObjHandler;
 import br.zul.zwork5.reflection.ZVarHandler;
-import br.zul.zwork4.util.ZList;
+import br.zul.zwork5.util.ZList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

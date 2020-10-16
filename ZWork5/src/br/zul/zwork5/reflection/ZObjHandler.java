@@ -76,7 +76,7 @@ public class ZObjHandler {
         Map<String, String> result = new LinkedHashMap<>();
         for (ZVarHandler var:listVars()){
             ZValue value = var.getValue();
-            result.put(var.getName(), value.optString());
+            result.put(var.getName(), value.asString().orElse(null));
         }
         return result;
     }

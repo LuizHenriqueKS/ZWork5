@@ -147,7 +147,7 @@ public class ZStrSearch {
             }
         }
         sortBy(resultList);
-        return resultList.first();
+        return resultList.first().get();
     }
 
     private ZList<ZStrSearchResult> searchPatternList(ZList<String> patternList) {

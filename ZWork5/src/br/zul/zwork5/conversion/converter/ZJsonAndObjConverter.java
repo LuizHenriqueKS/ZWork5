@@ -5,6 +5,7 @@ import br.zul.zwork5.conversion.ZConversionObjChecker;
 import br.zul.zwork5.conversion.ZConverter;
 import br.zul.zwork5.entity.ZEntity;
 import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZInstantiationException;
 import br.zul.zwork5.exception.ZJsonException;
 import br.zul.zwork5.exception.ZNewInstanceException;
 import br.zul.zwork5.exception.ZVarHandlerException;
@@ -65,7 +66,7 @@ public class ZJsonAndObjConverter implements ZConverter<ZJson, Object>{
                 result.setValue(value.asJsonObject().asObject(obj.getTargetClass()));
             }
             return result;
-        } catch (ZJsonException|ZNewInstanceException|ZVarHandlerException ex){
+        } catch (ZJsonException|ZNewInstanceException|ZVarHandlerException|ZInstantiationException ex){
             throw  new ZConversionErrorException(ex, obj);
         }
     }

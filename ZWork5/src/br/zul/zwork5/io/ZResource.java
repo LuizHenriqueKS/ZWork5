@@ -1,16 +1,15 @@
 package br.zul.zwork5.io;
 
 import br.zul.zwork5.io.path.ZResourcePath;
-import br.zul.zwork5.exception.ZFileNotFoundException;
 import br.zul.zwork5.io.path.ZPath;
 import br.zul.zwork5.io.zip.ZZipFile;
 import br.zul.zwork5.reflection.ZPackage;
-import br.zul.zwork5.exception.ZResourceNotFoundException;
 import br.zul.zwork5.exception.ZUneditableFileException;
 import br.zul.zwork5.stream.ZStream;
 import br.zul.zwork5.util.ZAppUtils;
 import br.zul.zwork5.util.ZList;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -111,7 +110,7 @@ public class ZResource implements ZFile{
     }
 
     @Override
-    public InputStream getInputStream() throws ZFileNotFoundException, IOException {
+    public InputStream getInputStream() throws FileNotFoundException, IOException {
         requireExists();
         return getURL().openStream();
     }
@@ -162,9 +161,9 @@ public class ZResource implements ZFile{
         return caller.getResource(getPath());
     }
     
-    private void requireExists() throws ZResourceNotFoundException{
+    private void requireExists() throws FileNotFoundException{
         if (!exists()){
-            throw new ZResourceNotFoundException(getPath());
+            throw new FileNotFoundException(getPath());
         }
     }
     

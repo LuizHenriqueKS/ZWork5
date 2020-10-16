@@ -1,11 +1,8 @@
 package br.zul.zwork5.io;
 
-import br.zul.zwork4.exception.ZFileNotFoundException;
-import br.zul.zwork4.exception.ZIOException;
-import br.zul.zwork4.exception.ZUneditableFileException;
-import br.zul.zwork4.str.ZStr;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.util.ZStrUtils;
+import br.zul.zwork5.exception.ZUneditableFileException;
+import br.zul.zwork5.str.ZStr;
+import br.zul.zwork5.util.ZList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -70,12 +67,8 @@ public class ZOSFile implements ZFile {
     }
 
     @Override
-    public InputStream getInputStream() throws ZFileNotFoundException {
-        try {
-            return new FileInputStream(file);
-        } catch (FileNotFoundException ex) {
-            throw new ZFileNotFoundException(ex, ZStrUtils.format("{0} ({1})", file.getPath(), file.getAbsolutePath()));
-        }
+    public InputStream getInputStream() throws FileNotFoundException, IOException {
+        return new FileInputStream(file);
     }
 
     @Override
@@ -88,9 +81,9 @@ public class ZOSFile implements ZFile {
                     return os;
                 }
                 @Override
-                public void commit() throws ZIOException {}
+                public void commit() throws IOException {}
                 @Override
-                public void rollback() throws ZIOException {}
+                public void rollback() throws IOException {}
             };
         }catch(FileNotFoundException f){
             throw new ZUneditableFileException(f);

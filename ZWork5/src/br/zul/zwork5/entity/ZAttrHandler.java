@@ -1,6 +1,7 @@
 package br.zul.zwork5.entity;
 
 import br.zul.zwork5.exception.ZAttrHandlerException;
+import br.zul.zwork5.exception.ZConversionErrorException;
 import br.zul.zwork5.exception.ZVarHandlerException;
 import br.zul.zwork5.reflection.ZVarHandler;
 import br.zul.zwork5.util.ZList;
@@ -77,7 +78,7 @@ public class ZAttrHandler {
             throw new ZAttrHandlerException(ex);
         }
     }
-    public void setValue(Object value){
+    public void setValue(Object value) throws ZConversionErrorException, ZVarHandlerException{
         new ZAttrValueSetter(this).set(value);
     }
     

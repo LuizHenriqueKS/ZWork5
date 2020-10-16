@@ -2,7 +2,8 @@ package br.zul.zwork5.conversion.converter;
 
 import br.zul.zwork5.conversion.ZConversionObj;
 import br.zul.zwork5.conversion.ZStringConverter;
-import br.zul.zwork4.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZConversionErrorException;
+import br.zul.zwork5.exception.ZJsonException;
 import br.zul.zwork5.json.ZJsonArray;
 
 /**
@@ -18,9 +19,13 @@ public class ZJsonArrayStringConverter extends ZStringConverter<ZJsonArray> {
 
     @Override
     public ZConversionObj convertToObj(ZConversionObj obj, String value) throws ZConversionErrorException {
-        ZConversionObj result = obj.copy();
-        result.setValue(new ZJsonArray(value));
-        return result;
+        try {
+            ZConversionObj result = obj.copy();
+            result.setValue(new ZJsonArray(value));
+            return result;
+        } catch (ZJsonException ex) {
+            throw new ZConversionErrorException(ex, obj);
+        }
     }
 
     @Override

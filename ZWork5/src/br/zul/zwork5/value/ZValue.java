@@ -2,17 +2,15 @@ package br.zul.zwork5.value;
 
 import br.zul.zwork5.conversion.ZConversionManager;
 import br.zul.zwork5.conversion.ZConversionObj;
+import br.zul.zwork5.conversion.ZConversionOut;
 import br.zul.zwork5.entity.ZEntity;
-import br.zul.zwork5.exception.ZConversionErrorException;
 import br.zul.zwork5.str.ZStr;
 import br.zul.zwork5.timestamp.ZDate;
 import br.zul.zwork5.timestamp.ZDateTime;
 import br.zul.zwork5.timestamp.ZTime;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import static javafx.scene.input.KeyCode.T;
 
 /**
  *
@@ -22,111 +20,51 @@ public interface ZValue {
 
     public Object asObject();
     
-    default public String asString() throws ZConversionErrorException{
+    default public ZConversionOut<String> asString(){
         return convertTo(String.class);
     }
     
-    default public String optString(){
-        return convertTo(String.class, null);
-    }
-    
-    default public boolean asBool() throws ZConversionErrorException{
+    default public ZConversionOut<Boolean> asBoolean() {
         return convertTo(Boolean.class);
     }
     
-    default public Boolean asBoolean() throws ZConversionErrorException{
-        return convertTo(Boolean.class);
-    }
-    
-    default public boolean optBool(boolean _default){
-        return convertTo(Boolean.class, _default);
-    }
-    
-    default public Boolean optBoolean(){
-        return convertTo(Boolean.class, null);
-    }
-    
-    default public int asInt() throws ZConversionErrorException{
+    default public ZConversionOut<Integer> asInteger(){
         return convertTo(Integer.class);
     }
     
-    default public Integer asInteger() throws ZConversionErrorException{
-        return convertTo(Integer.class);
-    }
-    
-    default public int optInt(int _default){
-        return convertTo(Integer.class, _default);
-    }
-    
-    default public Integer optInteger(){
-        return convertTo(Integer.class, null);
-    }
-    
-    default public Double asDouble() throws ZConversionErrorException{
+    default public ZConversionOut<Double> asDouble(){
         return convertTo(Double.class);
     }
     
-    default public Double optDouble(){
-        return convertTo(Double.class, null);
+    default public ZConversionOut<ZStr> asStr(boolean caseSensitive) {
+        return ()->new ZStr(asString().get(), caseSensitive);
     }
     
-    default public ZStr asStr(boolean caseSensitive) throws ZConversionErrorException{
-        return new ZStr(asString(), caseSensitive);
-    }
-    
-    default public ZStr optStr(boolean caseSensitive){
-        try {
-            if (rawObj()==null) return null;
-            return asStr(caseSensitive);
-        } catch (Exception ex){
-            return null;
-        }
-    }
-    
-    default public ZDate asDate() throws ZConversionErrorException{
+    default public ZConversionOut<ZDate> asDate() {
         return convertTo(ZDate.class);
     }
     
-    default public ZDate optDate(){
-        return convertTo(ZDate.class, null);
-    }
-    
-    default public ZDateTime asDateTime() throws ZConversionErrorException{
+    default public ZConversionOut<ZDateTime> asDateTime() {
         return convertTo(ZDateTime.class);
     }
     
-    default public ZDateTime optDateTime(){
-        return convertTo(ZDateTime.class, null);
-    }
-    
-    default public ZTime asTime() throws ZConversionErrorException{
+    default public ZConversionOut<ZTime> asTime() {
         return convertTo(ZTime.class);
     }
     
-    default public ZTime optTime(){
-        return convertTo(ZTime.class, null);
-    }
-    
-    default public Long asLong() throws ZConversionErrorException{
+    default public ZConversionOut<Long> asLong() {
         return convertTo(Long.class);
     }
-    
-    default public Long optLong(){
-        return convertTo(Long.class, null);
-    }
 
-    default public <T extends ZEntity> T asEntity(Class<T> entityClass) throws ZConversionErrorException{
+    default public <T extends ZEntity> ZConversionOut<T> asEntity(Class<T> entityClass) {
         return convertTo(entityClass);
     }
     
-    default public <T> T convertTo(Class<T> toClass) throws ZConversionErrorException{
+    default public <T> ZConversionOut<T> convertTo(Class<T> toClass) {
         Objects.requireNonNull(toClass);
-        return ZConversionManager.getInstance().convert(asObject(), toClass);
-    }
-    
-    default public <T> T convertTo(Class<T> toClass, T _default){
-        Objects.requireNonNull(toClass);
-        return ZConversionManager.getInstance().convert(asObject(), toClass, _default);
+        ZConversionObj in = new ZConversionObj(this, toClass);
+        ZConversionOut out = ()->(T)ZConversionManager.getInstance().convert(in);
+        return out;
     }
     
     default public Object rawObj(){

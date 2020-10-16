@@ -55,7 +55,7 @@ class ZUrlInfoBuilder {
     
     private String extractUser() {
        if (hasUserOrPassword()){
-           return fromProtocol().till("@").till(":").optString();
+           return fromProtocol().till("@").till(":").toString();
        }
        return null;
     }
@@ -78,7 +78,7 @@ class ZUrlInfoBuilder {
     private Integer extractPort(){
         ZStr hostPort = extractHostPort();
         if (hostPort.containsAny(":")){
-            return hostPort.from(":").optInteger();
+            return hostPort.from(":").asInteger().orElse(null);
         }
         return null;
     }

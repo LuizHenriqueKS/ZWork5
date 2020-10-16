@@ -1,10 +1,12 @@
 package br.zul.zwork5.entity;
 
 import br.zul.zwork5.conversion.ZConversionObj;
-import br.zul.zwork4.util.ZList;
-import br.zul.zwork4.value.ZValue;
+import br.zul.zwork5.exception.ZAttrHandlerException;
+import br.zul.zwork5.util.ZList;
+import br.zul.zwork5.value.ZValue;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -29,11 +31,11 @@ public class ZEntityHandler {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public Map<String, String> getStringVarMap() {
+    public Map<String, String> getStringVarMap() throws ZAttrHandlerException {
         Map<String, String> result = new LinkedHashMap<>();
         for (ZAttrHandler attr:listAttrs()){
             ZValue value = attr.getValue();
-            result.put(attr.getName(), value==null?null:value.asString());
+            result.put(attr.getName(), value.asString().orElse(null));
         }
         return result;
     }
@@ -50,16 +52,17 @@ public class ZEntityHandler {
         return attrMap;
     }
     
-    public Map<String, Object> getObjVarMap(){
+    public Map<String, Object> getObjVarMap() throws ZAttrHandlerException{
         Map<String, Object> result = new LinkedHashMap<>();
-        getVarMap().forEach((key, val)->{
-            Object value = val.getValue()==null?null:val.getValue().asObject();
+        for (Entry<String, ZAttrHandler> e: getVarMap().entrySet()){
+            String key = e.getKey();
+            Object value = e.getValue().getValue().asObject();
             if (value instanceof ZConversionObj){
                 result.put(key, ((ZConversionObj)value).getValue());
             } else {
                 result.put(key, value);
             }
-        });
+        }
         return result;
     }
     

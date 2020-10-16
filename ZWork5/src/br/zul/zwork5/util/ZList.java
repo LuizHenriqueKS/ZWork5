@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import br.zul.zwork5.stream.FunctionThrowable;
+import java.util.Optional;
 
 /**
  *
@@ -92,32 +92,8 @@ public class ZList<T> extends ArrayList<T> {
         return size() - 1;
     }
     
-    public T first() throws IndexOutOfBoundsException{
-        return get(0);
-    }
-    
-    public T optFirst(){
-        try {
-            return first();
-        } catch (IndexOutOfBoundsException e){
-            return null;
-        }
-    }
-    
-    public T last() throws IndexOutOfBoundsException{
-        return get(lastIndex());
-    }
-    
-    public T optLast(){
-        try {
-            return last();
-        } catch (IndexOutOfBoundsException e){
-            return null;
-        }
-    }
-    
-    public T last(int skip) throws IndexOutOfBoundsException{
-        return get(lastIndex()-skip);
+    public Optional<T> last(int skip) {
+        return Optional.ofNullable(opt(lastIndex()-skip));
     }
     
     public T removeLast() throws IndexOutOfBoundsException{
@@ -163,10 +139,6 @@ public class ZList<T> extends ArrayList<T> {
         return result;
     }
     
-    public T first(Predicate<T> predicate) throws NoSuchElementException{
-        return stream().filter(predicate).findFirst().get();
-    }
-    
     public ZList<T> filter(Predicate<T> predicate){
         List<T> list = stream().filter(predicate).collect(Collectors.toList());
         return new ZList<>(list);
@@ -188,12 +160,20 @@ public class ZList<T> extends ArrayList<T> {
         }
     }
     
-    public T optFirst(Predicate<T> predicate){
-        try {
-            return first(predicate);
-        }catch (NoSuchElementException e){
-            return null;
-        }
+    public Optional<T> first(){
+        return stream().findFirst();
+    }
+    
+    public Optional<T> last(){
+        return last(0);
+    }
+    
+    public Optional<T> first(Predicate<T> filter){
+        return stream().filter(filter).findFirst();
+    }
+    
+    public Optional<T> last(Predicate<T> filter){
+        return stream().filter(filter).findLast();
     }
     
     public static <T> Collector<T, ?, ZList<T>>  getCollector(){

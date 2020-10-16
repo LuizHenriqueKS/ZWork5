@@ -50,7 +50,7 @@ public class ZComparatorGetter {
     }
 
     private ZComparator<?> getComparatorFromList() {
-        return comparationManager.getComparatorList().optFirst(c->c.getType().equals(type));
+        return comparationManager.getComparatorList().first(c->c.getType().equals(type)).orElse(null);
     }
 
     private ZComparator<?> getComparatorFromObj() {
@@ -61,7 +61,7 @@ public class ZComparatorGetter {
     }
 
     private ZComparator<?> getComparatorSimilarFromList() {
-        return comparationManager.getComparatorList().optFirst(c->type.isAssignableFrom(c.getType()));
+        return comparationManager.getComparatorList().first(c->type.isAssignableFrom(c.getType())).orElse(null);
     }
     
 }

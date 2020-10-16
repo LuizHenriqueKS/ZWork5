@@ -51,7 +51,7 @@ class ZResourceChildStreamer {
         ZList<File> dirList = new ZList<>();
         dirList.add(ZAppUtils.getAppFile(resource.caller).getChild(resource.getPath()).toFile());
         while (!dirList.isEmpty()){
-            File dir = dirList.first();
+            File dir = dirList.first().get();
             streamResourceFromDirectory(dir).forEach(p->{
                 result.add(p.getB());
                 if (subresources&&p.getA().isDirectory()){

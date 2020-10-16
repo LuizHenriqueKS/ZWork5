@@ -1,7 +1,7 @@
 package br.zul.zwork5.io.txt;
 
 import br.zul.zwork5.io.ZFile;
-import br.zul.zwork5.exception.ZStreamClosedException;
+import br.zul.zwork5.exception.ZClosedException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -31,7 +31,7 @@ public class ZTxtFileFastReader {
     //==========================================================================
     //MÉTODOS PÚBLICOS
     //==========================================================================
-    public String readAll() throws IOException, ZStreamClosedException{
+    public String readAll() throws IOException, ZClosedException{
         try {
             char buffer[] = new char[4096];
             StringBuilder builder = new StringBuilder();
