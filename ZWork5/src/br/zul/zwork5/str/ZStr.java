@@ -5,7 +5,9 @@ import br.zul.zwork5.str.search.ZStrSearchResult;
 import br.zul.zwork5.str.search.ZStrSearcher;
 import br.zul.zwork5.util.ZUtil;
 import br.zul.zwork5.value.ZValue;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -268,6 +270,15 @@ public class ZStr implements ZValue {
         return new ZStr(builder.toString(), caseSensitive);
     }
     
+    public ZStr prepend(Object... objs){
+        StringBuilder builder = new StringBuilder();
+        for (Object obj:objs){
+            builder.append(obj);
+        }
+        builder.append(str);
+        return new ZStr(builder.toString(), caseSensitive);
+    }
+    
     public int length(){
         return str.length();
     }
@@ -338,6 +349,20 @@ public class ZStr implements ZValue {
         } else {
             return string;
         }
+    }
+
+    public ZStr trimStart() {
+        String localStr = str;
+        final List<String> spaceList = Arrays.asList(" ", "\t");
+        while (!localStr.isEmpty()){
+            String ch = localStr.substring(0, 1);
+            if (spaceList.contains(ch)){
+                localStr = localStr.substring(1);
+            } else {
+                break;
+            }
+        }
+        return new ZStr(localStr);
     }
     
     //==========================================================================
