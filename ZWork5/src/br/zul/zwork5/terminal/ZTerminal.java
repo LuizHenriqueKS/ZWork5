@@ -115,6 +115,12 @@ public class ZTerminal implements Closeable{
     public boolean isRunning(){
         return process!=null&&process.isAlive();
     }
+    
+    public void waitToFinish() throws InterruptedException{
+        while (isRunning()){
+            Thread.sleep(100);
+        }
+    }
 
     //==========================================================================
     //MÉTODOS DE VALIDAÇÃO
